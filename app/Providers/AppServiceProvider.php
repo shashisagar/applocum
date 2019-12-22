@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
     }
 
     /**
@@ -23,6 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \Illuminate\Support\Facades\Validator::extend('not_regex', function($attribute, $value, $parameters, $validator) {
+            if (!is_string($value) && !is_numeric($value)) {
+                return false;
+            }
+
+            return !preg_match($parameters[0], $value);
+        });
     }
 }

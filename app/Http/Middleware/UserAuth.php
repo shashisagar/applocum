@@ -14,11 +14,14 @@ class UserAuth
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next,$guard=null)
+    public function handle($request, Closure $next)
     {
-
-        if (!empty(Auth::user()->id)) {
+        if (!empty(Auth::user())) {
             return  $next($request);
+        }
+        if (Auth::guard('company')->user()) {
+            return redirect('/cmp/login');
+
         }
         return redirect('/login');
     }

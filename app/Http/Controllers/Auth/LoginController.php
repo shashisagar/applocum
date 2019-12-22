@@ -40,23 +40,17 @@ class LoginController extends Controller
         $this->middleware('guest:company')->except('logout');
     }
 
+
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'email'   => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-
+        $this->validateLogin($request);
         if (Auth::guard('company')->attempt(['email' => $request->email, 'password' => $request->password])) {
-
-           // dd("ppp");
             return redirect()->intended('/comp/dashboard');
         }
-
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-
             return redirect()->intended('/home');
         }
+        return $this->sendFailedLoginResponse($request);
     }
 
 }

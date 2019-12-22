@@ -21,6 +21,7 @@ if (!function_exists('uploadImageToStoragePath')) {
         return false;
     }
 }
+
 if (!function_exists('imageQuality')) {
     function imageQuality($image)
     {
@@ -33,3 +34,32 @@ if (!function_exists('imageQuality')) {
         else return 50;
     }
 }
+
+
+if (!function_exists('deleteImageFromStoragePath')) {
+    function deleteImageFromStoragePath($fileNameAndPath)
+    {
+        if ($fileNameAndPath != '') {
+            $fileNameAndPath = implode('/',explode('_', explode('/', $fileNameAndPath)[2]));
+            return (\Illuminate\Support\Facades\File::delete(storage_path() .'/'. $fileNameAndPath));
+        }
+    }
+}
+
+if (!function_exists('print_b')) {
+    function print_b($data)
+    {
+        echo '<pre>';
+        print_r($data);
+        die;
+    }
+}
+
+if (!function_exists('print_a')) {
+    function print_a($data)
+    {
+        echo '<pre>';
+        print_r($data);
+    }
+}
+?>

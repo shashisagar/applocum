@@ -49,7 +49,7 @@
                             <div class="form-group employee_update_hide">
                                 <label for="select_company">Company Name:</label>
 
-                                <select id="select_company"  class="form-group" name="select_company">
+                                <select id="select_company"  class="form-control" name="select_company">
                                 @foreach($companies as $company)
                                    <option class="form-group" value="{{$company->id}}">{{$company->name}}</option>
                                  @endforeach
@@ -59,18 +59,22 @@
                             <input type="hidden" id="employee_id_update" name="employee_id_update" value="">
 
                             <div class="form-group ">
-                                <label for="employee_name">Name:</label>
+                                <label for="employee_name">Name: *</label>
                                 <input type="text" class="form-control" id="employee_name" name="employee_name">
+                                <span id="employee_name_error" class="error_class"></span>
                             </div>
 
                             <div class="form-group">
-                                <label for="employee_email">Email:</label>
-                                <input type="email" class="form-control" id="employee_email" name="employee_email">
+                                <label for="employee_email">Email: *</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                                <span id="employee_email_error" class="error_class"></span>
                             </div>
 
                             <div class="form-group">
-                                <label for="employee_phone">Phone:</label>
+                                <label for="employee_phone">Phone: *</label>
                                 <input type="text" class="form-control" id="employee_phone" name="employee_phone">
+                                <span id="employee_phone_error" class="error_class"></span>
+
                             </div>
 
                             <button type="button" class="btn btn-default" id="create_employee_click">Create</button>
@@ -101,6 +105,7 @@
                 }
             });
             $("#create_new_employee").click(function () {
+                $(".error_class").text('');
                 $("#employee_name").val('');
                 $("#employee_id_update").val('');
                 $('.employee_update_hide').show();
@@ -126,6 +131,27 @@
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
+                        },
+                        error: function (errors) {
+
+                            var Obj = JSON.parse(errors.responseText);
+                            console.log(Obj);
+                            if (Obj.errors.employee_name) {
+                                $("#employee_name_error").html(Obj.errors.employee_name[0]);
+                            } else {
+                                $("#employee_name_error").html('');
+                            }
+                            if (Obj.errors.email) {
+                                $("#employee_email_error").html(Obj.errors.email[0]);
+                            } else {
+                                $("#employee_email_error").html('');
+                            }
+
+                            if (Obj.errors.employee_phone) {
+                                $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
+                            } else {
+                                $("#employee_phone_error").html('');
+                            }
                         }
                     }
                 );
@@ -149,7 +175,27 @@
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
+                        },
+                    error: function (errors) {
+
+                        var Obj = JSON.parse(errors.responseText)
+                        if (Obj.errors.company_name) {
+                            $("#employee_name_error").html(Obj.errors.employee_name[0]);
+                        } else {
+                            $("#employee_name_error").html('');
                         }
+                        if (Obj.errors.email) {
+                            $("#employee_email_error").html(Obj.errors.email[0]);
+                        } else {
+                            $("#employee_email_error").html('');
+                        }
+
+                        if (Obj.errors.employee_phone) {
+                            $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
+                        } else {
+                            $("#employee_phone_error").html('');
+                        }
+                    }
                     }
                 );
             });
@@ -172,7 +218,9 @@
 
 
             $(document.body).on('click', '.edit_employee', function () {
+                $(".error_class").text('');
                 var employee_id = $(this).attr('employee_id');
+               // var company_id = $(this).attr('company_id');
                 var employee_name = $(this).attr('employee_name');
                 var employee_phone = $(this).attr('employee_phone');
                 var employee_email = $(this).attr('employee_email');
@@ -180,11 +228,13 @@
                 $("#update_employee_click").show();
                 $("#create_employee_click").hide();
                 $("#create_update_employee").text('Update employee');
-                $("#employee_email").val(employee_email);
+                $("#email").val(employee_email);
                 $("#employee_name").val(employee_name);
                 $("#employee_phone").val(employee_phone);
                 $("#employee_id_update").val(employee_id);
                 $("#employee_password").val('');
+                //$("#select_company").val(company_id);
+
                 $("#createEmployee").modal('show');
             })
 

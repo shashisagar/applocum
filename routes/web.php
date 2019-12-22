@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+///These root are access by Admin User.
 
 Route::group(['middleware' => ['user_auth']], function () {
 
@@ -29,10 +30,10 @@ Route::group(['middleware' => ['user_auth']], function () {
     Route::post('employee/update', 'EmployeeController@employeeUpdate');
     Route::post('employee/delete', 'EmployeeController@employeeDelete');
 });
-///These root are access by those admin user who has been logged In.
+///These root are access by Company User.
 
 Route::group(['middleware' => ['company_auth']], function () {
-
+    Route::get('/cmp/login', 'UserCompanyController@login');
     Route::get('/comp/dashboard', 'UserCompanyController@index');
     Route::post('/comp/employee/store', 'UserCompanyController@store');
     Route::post('/comp/employee_list', 'UserCompanyController@employeeList');
@@ -40,3 +41,16 @@ Route::group(['middleware' => ['company_auth']], function () {
     Route::post('/comp/employee/delete', 'UserCompanyController@employeeDelete');
 
 });
+///These root are access for getting images from storage
+
+Route::get('/image/{filePath}', function ($filePath) {
+    $filePath = explode("_", $filePath);
+    $filePath = implode('/', $filePath);
+    $filePath = storage_path() . '/' . $filePath;
+    $file = File::get($filePath);
+    $type = File::mimeType($filePath);
+    $response = Response::make($file, 500);
+    $response->header("Content-Type", $type);
+    return $response;
+});
+

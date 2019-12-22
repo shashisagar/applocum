@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 use App\Company;
 use App\Employee;
+use App\Http\Requests\StoreUserCompanyPost;
+use App\Http\Requests\UpdateUserCompanyPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Image;
 use Storage;
@@ -38,33 +41,35 @@ class UserCompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserCompanyPost $request)
     {
-        $company_id=$request->select_company;
+        $company_id=Auth::guard('company')->user()->id;
         $name=$request->employee_name;
-        $email=$request->employee_email;
+        $email=$request->email;
         $phone=$request->employee_phone;
         $storeArray=array('name'=>$name,'email' =>$email,'phone' =>$phone,'company_id'=>$company_id);
-        Employee::create($storeArray);
+        Employee::insert($storeArray);
         return  json_encode($storeArray);
 
     }
 
 
-    public function employeeUpdate(Request $request){
+    public function employeeUpdate(UpdateUserCompanyPost $request){
+        $company_id_auth=Auth::guard('company')->user()->id;
         $comp_id=$request->employee_id_update;
-        $email=$request->employee_email;
+        $email=$request->email;
         $name=$request->employee_name;
         $phone=$request->employee_phone;
         $updateArray=array('name'=>$name,'phone'=>$phone,'email'=>$email);
-        $res=Employee::where('id','=',$comp_id)->update($updateArray);
+        $res=Employee::where('id','=',$comp_id)->where('company_id','=',$company_id_auth)->update($updateArray);
         return  json_encode($updateArray);
     }
 
 
 
     public function employeeList(Request $request){
-        $data = Employee::select('employees.*','companies.name as cname')->join('companies','companies.id','=','employees.company_id');
+        $data = Employee::select('employees.*','companies.name as cname')->join('companies','companies.id','=','employees.company_id')
+                ->where('employees.company_id','=',Auth::guard('company')->user()->id);
         return DataTables::of($data)
             ->addColumn('action', function ($data) {
                 return '<button class="btn btn-xs btn-primary edit_employee" employee_id="' . $data->id . '" employee_name="' . $data->name . '"  employee_phone="' . $data->phone . '" employee_email="' . $data->email . '"> Edit</button>
@@ -76,12 +81,17 @@ class UserCompanyController extends Controller
 
 
     public function employeeDelete(Request $request){
+        $company_id_auth=Auth::guard('company')->user()->id;
         $emp_id=$request->employee_id;
-        $status = Employee::where('id',$emp_id)->delete();
+        $status = Employee::where('id',$emp_id)->where('company_id','=',$company_id_auth)->delete();
         if($status){
             return  json_encode("1");
 
         }
+    }
+    public function login(Request $request){
+        return redirect('/comp/dashboard');
+
     }
 
 }

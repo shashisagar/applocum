@@ -16,15 +16,9 @@ class Company
      */
     public function handle($request, Closure $next, $guard = null)
     {
-
-            if (Auth::guard('company')->user()->id) {
-               // dd("ooo");
+            if (Auth::guard('company')->user()) {
                 return $next($request);
-
-            } else {
-               // dd("yy");
-                return redirect('/login');
             }
-
+            return redirect('/login');
     }
 }

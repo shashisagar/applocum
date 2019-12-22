@@ -162,7 +162,7 @@ class CompanyController extends Controller
 
     public function companyList(Request $request)
     {
-        $data = Company::select('*')->orderBy('id','desc');
+        $data = Company::select('*')->orderBy('id', 'desc');
         return DataTables::of($data)
             ->addColumn('action', function ($data) {
                 return '<button class="btn btn-xs btn-primary edit_company" company_id="' . $data->id . '" company_name="' . $data->name . '"  company_website="' . $data->website . '" company_logo="' . $data->logo . '" company_email="' . $data->email . '"> Edit</button>

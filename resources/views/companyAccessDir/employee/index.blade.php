@@ -16,8 +16,6 @@
         </div>
 
 
-
-
         <div class="container">
             <table id="employee_list" class="table table-hover table-condensed" style="width:100%">
                 <thead>
@@ -61,7 +59,7 @@
                             <div class="form-group">
                                 <label for="employee_phone">Phone:*</label>
                                 <input type="text" class="form-control" id="employee_phone" name="employee_phone">
-                                <span id="employee_phone_error"class="error_class"></span>
+                                <span id="employee_phone_error" class="error_class"></span>
                             </div>
 
                             <button type="button" class="btn btn-default" id="create_employee_click">Create</button>
@@ -116,31 +114,31 @@
                         contentType: false,
                         processData: false,
                         success: function (html) {
-                            alert("Created successfully!!");
+                            notification('Created successfully!!','success');
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
                         },
-                    error: function (errors) {
+                        error: function (errors) {
+                            notification('Please check error!!','error');
+                            var Obj = JSON.parse(errors.responseText)
+                            if (Obj.errors.employee_name) {
+                                $("#employee_name_error").html(Obj.errors.employee_name[0]);
+                            } else {
+                                $("#employee_name_error").html('');
+                            }
+                            if (Obj.errors.email) {
+                                $("#employee_email_error").html(Obj.errors.email[0]);
+                            } else {
+                                $("#employee_email_error").html('');
+                            }
 
-                        var Obj = JSON.parse(errors.responseText)
-                        if (Obj.errors.employee_name) {
-                            $("#employee_name_error").html(Obj.errors.employee_name[0]);
-                        } else {
-                            $("#employee_name_error").html('');
+                            if (Obj.errors.employee_phone) {
+                                $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
+                            } else {
+                                $("#employee_phone_error").html('');
+                            }
                         }
-                        if (Obj.errors.email) {
-                            $("#employee_email_error").html(Obj.errors.email[0]);
-                        } else {
-                            $("#employee_email_error").html('');
-                        }
-
-                        if (Obj.errors.employee_phone) {
-                            $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
-                        } else {
-                            $("#employee_phone_error").html('');
-                        }
-                    }
                     }
                 );
             });
@@ -158,31 +156,31 @@
                         contentType: false,
                         processData: false,
                         success: function (html) {
-                            alert("Updated successfully!!");
+                            notification('Updated successfully!!','success');
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
                         },
-                    error: function (errors) {
+                        error: function (errors) {
+                            notification('Please check error!!','error');
+                            var Obj = JSON.parse(errors.responseText)
+                            if (Obj.errors.company_name) {
+                                $("#employee_name_error").html(Obj.errors.employee_name[0]);
+                            } else {
+                                $("#employee_name_error").html('');
+                            }
+                            if (Obj.errors.email) {
+                                $("#employee_email_error").html(Obj.errors.email[0]);
+                            } else {
+                                $("#employee_email_error").html('');
+                            }
 
-                        var Obj = JSON.parse(errors.responseText)
-                        if (Obj.errors.company_name) {
-                            $("#employee_name_error").html(Obj.errors.employee_name[0]);
-                        } else {
-                            $("#employee_name_error").html('');
+                            if (Obj.errors.employee_phone) {
+                                $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
+                            } else {
+                                $("#employee_phone_error").html('');
+                            }
                         }
-                        if (Obj.errors.email) {
-                            $("#employee_email_error").html(Obj.errors.email[0]);
-                        } else {
-                            $("#employee_email_error").html('');
-                        }
-
-                        if (Obj.errors.employee_phone) {
-                            $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
-                        } else {
-                            $("#employee_phone_error").html('');
-                        }
-                    }
                     }
                 );
             });
@@ -225,7 +223,6 @@
 
             $(document.body).on('click', '.delete_employee', function () {
                 var employee_id = $(this).attr('employee_id');
-                //alert(employee_id);
                 if (confirm("Are you sure?")) {
                     $.ajax({
                             url: '{{url('comp/employee/delete')}}',
@@ -233,7 +230,7 @@
                             data: {employee_id: employee_id},
                             dataType: "Json",
                             success: function (html) {
-                                alert("Deleted successfully!!");
+                                notification('Deleted successfully!!','success');
                                 var table = $('#employee_list').DataTable();
                                 table.ajax.reload();
                             }

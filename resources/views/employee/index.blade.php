@@ -18,8 +18,6 @@
         </div>
 
 
-
-
         <div class="container">
             <table id="employee_list" class="table table-hover table-condensed" style="width:100%">
                 <thead>
@@ -49,10 +47,10 @@
                             <div class="form-group employee_update_hide">
                                 <label for="select_company">Company Name:</label>
 
-                                <select id="select_company"  class="form-control" name="select_company">
-                                @foreach($companies as $company)
-                                   <option class="form-group" value="{{$company->id}}">{{$company->name}}</option>
-                                 @endforeach
+                                <select id="select_company" class="form-control" name="select_company">
+                                    @foreach($companies as $company)
+                                        <option class="form-group" value="{{$company->id}}">{{$company->name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -107,6 +105,8 @@
             $("#create_new_employee").click(function () {
                 $(".error_class").text('');
                 $("#employee_name").val('');
+                $("#email").val('');
+                $("#employee_phone").val('');
                 $("#employee_id_update").val('');
                 $('.employee_update_hide').show();
                 $("#update_employee_click").hide();
@@ -127,15 +127,14 @@
                         contentType: false,
                         processData: false,
                         success: function (html) {
-                            alert("Created successfully!!");
+                            notification('Created successfully!!','error');
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
                         },
                         error: function (errors) {
-
+                            notification('Please check error!!','error');
                             var Obj = JSON.parse(errors.responseText);
-                            console.log(Obj);
                             if (Obj.errors.employee_name) {
                                 $("#employee_name_error").html(Obj.errors.employee_name[0]);
                             } else {
@@ -171,31 +170,31 @@
                         contentType: false,
                         processData: false,
                         success: function (html) {
-                            alert("Updated successfully!!");
+                            notification('Updated successfully!!','success');
                             $("#createEmployee").modal('hide');
                             var table = $('#employee_list').DataTable();
                             table.ajax.reload();
                         },
-                    error: function (errors) {
+                        error: function (errors) {
+                            notification('Please check error!!','error');
+                            var Obj = JSON.parse(errors.responseText)
+                            if (Obj.errors.company_name) {
+                                $("#employee_name_error").html(Obj.errors.employee_name[0]);
+                            } else {
+                                $("#employee_name_error").html('');
+                            }
+                            if (Obj.errors.email) {
+                                $("#employee_email_error").html(Obj.errors.email[0]);
+                            } else {
+                                $("#employee_email_error").html('');
+                            }
 
-                        var Obj = JSON.parse(errors.responseText)
-                        if (Obj.errors.company_name) {
-                            $("#employee_name_error").html(Obj.errors.employee_name[0]);
-                        } else {
-                            $("#employee_name_error").html('');
+                            if (Obj.errors.employee_phone) {
+                                $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
+                            } else {
+                                $("#employee_phone_error").html('');
+                            }
                         }
-                        if (Obj.errors.email) {
-                            $("#employee_email_error").html(Obj.errors.email[0]);
-                        } else {
-                            $("#employee_email_error").html('');
-                        }
-
-                        if (Obj.errors.employee_phone) {
-                            $("#employee_phone_error").html(Obj.errors.employee_phone[0]);
-                        } else {
-                            $("#employee_phone_error").html('');
-                        }
-                    }
                     }
                 );
             });
@@ -220,7 +219,6 @@
             $(document.body).on('click', '.edit_employee', function () {
                 $(".error_class").text('');
                 var employee_id = $(this).attr('employee_id');
-               // var company_id = $(this).attr('company_id');
                 var employee_name = $(this).attr('employee_name');
                 var employee_phone = $(this).attr('employee_phone');
                 var employee_email = $(this).attr('employee_email');
@@ -241,7 +239,6 @@
 
             $(document.body).on('click', '.delete_employee', function () {
                 var employee_id = $(this).attr('employee_id');
-                //alert(employee_id);
                 if (confirm("Are you sure?")) {
                     $.ajax({
                             url: '{{url('employee/delete')}}',
@@ -249,7 +246,7 @@
                             data: {employee_id: employee_id},
                             dataType: "Json",
                             success: function (html) {
-                                alert("Deleted successfully!!");
+                                notification('Deleted successfully!!','success');
                                 var table = $('#employee_list').DataTable();
                                 table.ajax.reload();
                             }

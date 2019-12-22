@@ -153,7 +153,7 @@
 
            $("#create_company_click").click(function(e){
                e.preventDefault();
-
+               $("#create_company_click").text('Creating...');
                var form = $('#create_company')[0];
                var formdata = new FormData(form);
                $.ajax({
@@ -165,10 +165,11 @@
                        processData: false,
                        dataType:"JSON",
                        before:function(){
-                         //$("#show_loader").html('Please wait...');
+
                        },
                        success: function (html) {
                           // $("#show_loader").html('mail sent successfully');
+                           $("#create_company_click").text('Create');
                            alert("Created successfully & mail sent to admin!!");
                            $("#createComapny").modal('hide');
                            var table = $('#company_list').DataTable();

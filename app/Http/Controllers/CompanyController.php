@@ -68,10 +68,10 @@ class CompanyController extends Controller
         $subject = 'New Company Creation';
         $data = array('email' => $email, 'subject' => $subject, 'name' => $name);
 
-        Mail::to('shashisagar120@gmail.com')->send(new CompanyCreationEmail($data));
+        Mail::to('applocumadmin@yopmail.com')->send(new CompanyCreationEmail($data));
 
         /*
-        Mail::to('applocumadmin@yopmail.com)->send(new CompanyCreationEmail($data));
+        Mail::to('applocumadmin@yopmail.com')->send(new CompanyCreationEmail($data));
         */
 
         return json_encode($storeArray);
